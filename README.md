@@ -1,18 +1,12 @@
-# Agent Prompts
+# AGENTS.md Patterns for Context Engineering in Coding Agents
 
-Practical prompt files for coding agents.
+Practical AGENTS.md prompt patterns for Codex, Claude Code, Cursor, Windsurf, GitHub Copilot, and other coding agents.
 
-The current focus is context discipline: reducing token waste, avoiding large command-output dumps, which reduce the effectiveness of coding agents.
+This repo focuses on context engineering: reducing token waste, protecting the context window, avoiding huge command-output dumps, and improving coding-agent reliability.
 
-## Main file
+## Biggest win: byte-capped command output
 
-See [`AGENTS.md`](./AGENTS.md).
-
-## Biggest current win
-
-The `## Command Output` section is the highest-impact rule so far. It makes coding agents byte-cap unknown command output instead of relying only on line limits.
-
-Line limits like `head -n 20`, `tail -n 20`, and `sed -n '1,20p'` can still flood the context window when output contains a huge single-line file, minified JSON, JSONL record, log entry, or stack trace.
+Line limits like `head -n 20`, `tail -n 20`, or `sed -n '1,20p'` can still flood the context window when output contains one huge line. This can overload the agents context window with unrelated information, thus reducing the quality of the response while increasing cost.
 
 Safer default:
 
@@ -20,24 +14,46 @@ Safer default:
 COMMAND 2>&1 | head -c 4000
 ```
 
-For recent failures or logs:
+For logs or recent failures:
 
 ```bash
 COMMAND 2>&1 | tail -c 4000
 ```
 
-In my own use, adding this rule to my base `AGENTS.md` reduced average token usage by roughly 50% across comparable coding-agent tasks.
+In my own coding-agent workflows, this one AGENTS.md rule reduced average token usage by roughly 50% across comparable tasks.
 
-## Philosophy
+## What this AGENTS.md covers
 
-Agents usually know how to run commands. The missing behavior is context discipline.
+- command-output byte caps
+- context window protection
+- token efficiency
+- scoped search discipline
+- validation rules
+- prompt-injection resistance
+- minimal code-change behavior
+- coding-agent communication rules
 
-These prompts are designed to make agents:
+## Why this matters
 
-- inspect scope before printing content
-- cap unknown output by bytes
-- preserve exit codes when validation matters
-- avoid broad unbounded searches
-- narrow commands instead of dumping more output
+Coding agents usually know how to run commands.
+
+The missing behavior is context discipline.
+
+This AGENTS.md teaches agents to inspect scope before printing content, cap unknown output by bytes, preserve useful context, and narrow commands instead of dumping large files, logs, diffs, or search results.
+
+## Main file
+
+See [`AGENTS.md`](./AGENTS.md).
+
+## Related tools
+
+These patterns are written for AGENTS.md, but many can be adapted for:
+
+- Codex
+- Claude Code
+- Cursor rules
+- Windsurf rules
+- GitHub Copilot instructions
+- custom AI coding agents
 
 Built by [Austin Serb](https://austinserb.com).
