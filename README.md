@@ -4,6 +4,8 @@ Practical AGENTS.md prompt patterns for Codex, Claude Code, Cursor, Windsurf, Gi
 
 This repo focuses on context engineering: reducing token waste, protecting the context window, avoiding huge command-output dumps, and improving coding-agent reliability.
 
+> There will be more to come, follow or watch to get updates!
+
 ## Biggest win: byte-capped command output
 
 Line limits like `head -n 20`, `tail -n 20`, or `sed -n '1,20p'` can still flood the context window when output contains one huge line. This can overload the agents context window with unrelated information, thus reducing the quality of the response while increasing cost.
