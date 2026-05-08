@@ -47,6 +47,8 @@ This AGENTS.md teaches agents to inspect scope before printing content, cap unkn
 
 See [`AGENTS.md`](./AGENTS.md).
 
+For a coding optimized system prompt, see [`codex_base_instructions.md`](./codex_base_instructions.md).
+
 ## Related tools
 
 These patterns are written for AGENTS.md, but many can be adapted for:
