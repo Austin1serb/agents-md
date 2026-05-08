@@ -11,13 +11,13 @@ Create a markdown file for your custom Codex instructions.
 Example:
 
 ```txt
-codex_base_instructions.md
+codex-optimized-prompt.md
 ```
 
 Then point your Codex config to that file from your `.codex/config.toml`:
 
 ```toml
-model_instructions_file = "path/to/codex_base_instructions.md"
+model_instructions_file = "path/to/codex-optimized-prompt.md"
 ```
 
 OpenAI's Codex config reference describes `model_instructions_file` as a replacement for Codex's built-in instructions. It also supports profile-scoped (CLI only) replacement instruction files with `profiles.<name>.model_instructions_file`. 

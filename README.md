@@ -1,63 +1,57 @@
 # AGENTS.md Patterns for Context Engineering in Coding Agents
 
-Practical AGENTS.md prompt patterns for Codex, Claude Code, Cursor, Windsurf, GitHub Copilot, and other coding agents.
+Practical `AGENTS.md` and Codex prompt patterns for coding agents that need better context discipline, safer command output, and lower token usage.
 
-This repo focuses on context engineering: reducing token waste, protecting the context window, avoiding huge command-output dumps, and improving coding-agent reliability.
+This repo is for Software Engineers using Codex, Claude Code, Cursor, Windsurf, GitHub Copilot, or custom AI coding agents who want agents to get the most from their agent harness.
 
-> There will be more to come, follow or watch to get updates!
+> [!NOTE]
+> There will be more to come. Follow or watch to get updates.
 
-## Biggest win: byte-capped command output
+## What is in this repo
 
-Line limits like `head -n 20`, `tail -n 20`, or `sed -n '1,20p'` can still flood the context window when output contains one huge line. This can overload the agents context window with unrelated information, thus reducing the quality of the response while increasing cost.
+| File | Purpose |
+|---|---|
+| [`AGENTS.md`](./AGENTS.md) | Optimized Coding-agent instructions for context discipline, command-output byte caps, scoped search, validation, and safe code changes. |
+| [`codex-optimized-prompt.md`](./codex-optimized-prompt.md) | A coding-optimized Codex system prompt for stronger default behavior across tasks. |
+| [`change-codex-system-prompt.md`](./change-codex-system-prompt.md) | How to replace the Codex system prompt with `model_instructions_file`, including subagent instruction files. |
+| [`codex-GPT-5.5-system-prompt.md`](./codex-GPT-5.5-system-prompt.md) | OpenAI's base system prompt for Codex GPT-5.5, which is more general-purpose than `codex-optimized-prompt.md`. |
 
-Safer default:
+## Biggest current win: Byte-capped command output
+
+A common coding-agent failure mode is pulling thousands of irrelevant lines into context while researching a task.
+
+Line limits like `head -n 20`, help sometimes, but they are not safe. One huge line can still flood the context window, reducing the output quality and increasing token usage.
+
+Use byte caps for unknown or potentially large command output:
 
 ```bash
 COMMAND 2>&1 | head -c 4000
 ```
 
-For logs or recent failures:
+For logs, test failures, or recent output:
 
 ```bash
 COMMAND 2>&1 | tail -c 4000
 ```
 
-In my own coding-agent workflows, this one AGENTS.md rule reduced average token usage by roughly 50% across comparable tasks.
+In my own Codex workflows, this single `AGENTS.md` rule reduced average token usage by roughly 50% across comparable tasks.
 
-## What this AGENTS.md covers
+## Why context discipline matters
 
-- command-output byte caps
-- context window protection
-- token efficiency
-- scoped search discipline
-- validation rules
-- prompt-injection resistance
-- minimal code-change behavior
-- coding-agent communication rules
+Coding agents are good at writing shell commands, but I have found they often consume much more information than necessary to complete a task. For example, you might have a file that contains many utility functions, and you ask the agent to find a specific function and explain it. The Agent might read the entire file, when it only needed to read a few lines to find the function definition. This can lead to degraded responses, higher token usage, and more irrelevant information in the context.
 
-## Why this matters
+## How to use AGENTS.md
 
-Coding agents usually know how to run commands.
+Copy [`AGENTS.md`](./AGENTS.md) into the root of a repo that supports agent instruction files.
 
-The missing behavior is context discipline.
+For Codex, this repo also includes [`codex-optimized-prompt.md`](./codex-optimized-prompt.md), which I use as a coding-optimized system prompt.
 
-This AGENTS.md teaches agents to inspect scope before printing content, cap unknown output by bytes, preserve useful context, and narrow commands instead of dumping large files, logs, diffs, or search results.
+To use it as your default Codex instruction file, download the file, and add this to your `.codex/config.toml`:
 
-## Main file
+```toml
+model_instructions_file = "path/to/codex-optimized-prompt.md"
+```
 
-See [`AGENTS.md`](./AGENTS.md).
-
-For a coding optimized system prompt, see [`codex_base_instructions.md`](./codex_base_instructions.md).
-
-## Related tools
-
-These patterns are written for AGENTS.md, but many can be adapted for:
-
-- Codex
-- Claude Code
-- Cursor rules
-- Windsurf rules
-- GitHub Copilot instructions
-- custom AI coding agents
+You can also set different instruction files for different Codex profiles or subagents.
 
 Built by [Austin Serb](https://austinserb.com).
