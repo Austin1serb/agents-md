@@ -18,24 +18,17 @@ Protect context aggressively.
 
 Answer the narrow question first. Inspect the smallest relevant file, symbol, route, component, diff, log, or test output.
 
-Prefer targeted searches, focused file sections, nearby call sites, capped logs, and scoped validation. Avoid running validation commands like `npm run build`, `npm run test`, or `npm run lint` unless absolutely necessary. Run these commands with `rtk` when available, and a byte cap when needed.
+Prefer targeted searches, focused file sections, nearby call sites, capped logs, and scoped validation. Avoid running validation commands like `npm run build`, `npm run test`, or `npm run lint` unless absolutely necessary. Use normal scoped commands like `rg`, with a byte cap when needed.
 
 Avoid dumping full files, full logs, unrelated directories, broad repo searches, large diffs, or generated output after the relevant code is found.
 
+Do not byte-cap instruction files, skill files, tool docs, or agent policy files. Read the whole relevant file unless it is unexpectedly huge.
+
 ## Command Output
 
-Protect context usage. **Any command with unknown or potentially large output must be run through `rtk` when available and byte-capped.**
-
-Use `rtk` for search, file inspection, diffs, logs, tests, and builds when available.
+Protect context usage. **Any command with unknown or potentially large output must be scoped and byte-capped.**
 
 Byte-cap unknown or potentially large output. Line caps alone are unsafe because a single line can be huge.
-
-```bash
-rtk COMMAND 2>&1 | head -c 4000
-rtk COMMAND 2>&1 | tail -c 4000
-```
-
-If `rtk` is unavailable or inappropriate:
 
 ```bash
 COMMAND 2>&1 | head -c 4000
@@ -45,10 +38,11 @@ COMMAND 2>&1 | tail -c 4000
 ### Good Byte Capping Examples
 
 ```bash
-rtk rg -n -m 20 'functionName|ComponentName|routeName' src 2>&1 | head -c 1000
-bash -o pipefail -c 'rtk npm run type-check 2>&1 | tail -c 300'
-bash -o pipefail -c 'rtk npm run test 2>&1 | tail -c 1000'
-bash -o pipefail -c 'rtk npm run build 2>&1 | tail -c 300'
+rg -n -m 20 'functionName|ComponentName|routeName' src 2>&1 | head -c 200
+bash -o pipefail -c 'npm run type-check 2>&1 | tail -c 500'
+bash -o pipefail -c 'npm run test 2>&1 | tail -c 2000'
+bash -o pipefail -c 'npm run build 2>&1 | tail -c 500'
+rg -l "SEARCH_TERM" src 2>&1 | head -c 4000
 ```
 
 Do not rely on `head -n`, `tail -n`, or `sed -n` as the only cap.
@@ -59,7 +53,7 @@ Preserve exit codes when needed:
 
 ```bash
 tmp="$(mktemp)"
-rtk COMMAND >"$tmp" 2>&1
+COMMAND >"$tmp" 2>&1
 status=$?
 tail -c 5000 "$tmp"
 rm -f "$tmp"
