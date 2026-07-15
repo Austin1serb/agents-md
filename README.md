@@ -56,4 +56,4 @@ model_instructions_file = "path/to/codex-optimized-prompt.md"
 
 You can also set different instruction files for different Codex profiles or subagents.
 
-Built by [Austin Serb](https://austinserb.com).
+Maintained by [Austin Serb @ Serbyte Web Design](https://www.serbyte.net/).
